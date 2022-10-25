@@ -3,3 +3,4 @@
 *.pyc
 __pycache__
 _pycache_
+reloader.py
