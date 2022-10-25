@@ -15,3 +15,7 @@ This bot features:
 > /mute <user>
 
 > /unmute <user>
+
+---
+
+Reminder: This isn't the complete build of the bot, nor can you use the bot.
