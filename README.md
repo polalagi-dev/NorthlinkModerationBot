@@ -19,4 +19,4 @@ This bot features:
 ---
 
 Reminder: This isn't the complete version of the bot, nor can you use the bot.
-This has progress of the bot development.
+This has progress of the bot's development.
