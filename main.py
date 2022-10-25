@@ -107,9 +107,23 @@ async def unbanCommandFunction(itr,user: discord.User, reason: str = "No reason 
     await bot.get_guild(GUILD).unban(user=user,reason=reason)
     await itr.response.send_message(content=f"Sucessfully unbanned <@{str(uid)}>.",embed=embed,ephemeral=False)
 
+@tree.command(name="openticket",description="Opens a ticket",guild=discord.Object(id=GUILD))
+async def openticketCommandFunction(itr, reason: str = "No reason given."):
+    guild=bot.get_guild(GUILD)
+    if f"ticket-{itr.user}" in guild.channels:
+        await itr.response.send_message(content="You can only have one ticket opened at a time.",ephemeral=True)
+    guild.create_text_channel(name=f"ticket-{itr.user}",category=None) # TODO add valid category parameter
+    channelId=discord.utils.get(guild.channels, name=f"ticket-{itr.user}")
+    embed=discord.Embed(title="Ticket Created",description=f"Support is gonna respond soon.",color=0X1FACE3,timestamp=datetime.datetime.now())
+    embed=embed.add_field(name="Reason of Ticket Creation",value=reason) #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
+    #await bot.get_guild(GUILD).unban(user=user,reason=reason)
+    await itr.response.send_message(content=f"Ticket created, <#{str(channelId)}>.",ephemeral=True)
+    await guild.get_channel(channel_id=channelId).send_message(content=f"<@{str(itr.user.id)}>",embeds=embed)
+    #await itr.response.send_message(content=f"Sucessfully unbanned <@{str(uid)}>.",embed=embed,ephemeral=False)
+
 @bot.event
 async def on_member_join(user):
-    embed=discord.Embed(title="Welcome to Northlink Ferries!",description=f"Welcome! We hope you enjoy your stay at Northlink Ferries! Also, don't forget to read the rules so you\n- Ownership Team",color=0X1FACE3,timestamp=datetime.datetime.now())
+    embed=discord.Embed(title="Welcome to Northlink Ferries!",description=f"Welcome! We hope you enjoy your stay at Northlink Ferries! Also, don't forget to read the rules so you can enjoy the crossings!\n- Ownership Team",color=0X1FACE3,timestamp=datetime.datetime.now())
     embed=embed.set_image("https://cdn.discordapp.com/avatars/1016379795631779890/1092b308fa22df9b456284c05d83be5c.webp")
     await user.send(content="Northlink Ferries",embeds=embed)
 
