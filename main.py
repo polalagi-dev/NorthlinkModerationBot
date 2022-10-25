@@ -77,7 +77,7 @@ async def kickCommandFunction(itr,user: discord.User, reason: str = "No reason g
     await itr.response.send_message(content=f"Sucessfully kicked <@{str(uid)}>.",embed=embed,ephemeral=False)
 
 @tree.command(name="ban",description="Bans user",guild=discord.Object(id=GUILD))
-async def banCommandFunction(itr,user: discord.User, reason: str = "No reason given.", deleteMessageDays: int = 0):
+async def banCommandFunction(itr,user: discord.User, reason: str = "No reason given.", deleteDays: int = 0):
     role=discord.utils.find(lambda g: g.name=="Owner", itr.guild.roles)
     if not role in itr.user.roles:
         await itr.response.send_message(content="Not authorized.",ephemeral=True)
@@ -88,8 +88,8 @@ async def banCommandFunction(itr,user: discord.User, reason: str = "No reason gi
     embed=embed.add_field(name="Moderator",value=f"<@{itr.user.id}>")
     embed=embed.add_field(name="Moderation Type",value="Ban")
     embed=embed.add_field(name="Reason",value=reason)
-    embed=embed.add_field(name="Delete Message Days",value=str(deleteMessageDays))
-    await bot.get_guild(GUILD).ban(user=user,reason=reason,delete_message_days=deleteMessageDays)
+    embed=embed.add_field(name="Delete Message Days",value=str(deleteDays))
+    await bot.get_guild(GUILD).ban(user=user,reason=reason,delete_message_days=deleteDays)
     await itr.response.send_message(content=f"Sucessfully banned <@{str(uid)}>.",embed=embed,ephemeral=False)
 
 @tree.command(name="unban",description="Unbans user",guild=discord.Object(id=GUILD))
