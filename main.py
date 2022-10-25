@@ -93,7 +93,7 @@ async def banCommandFunction(itr,user: discord.User, reason: str = "No reason gi
     await itr.response.send_message(content=f"Sucessfully banned <@{str(uid)}>.",embed=embed,ephemeral=False)
 
 @tree.command(name="unban",description="Unbans user",guild=discord.Object(id=GUILD))
-async def unbanCommandFunction(itr,user: discord.User, reason: str = "No reason given.", deleteMessageDays: int = 0):
+async def unbanCommandFunction(itr,user: discord.User, reason: str = "No reason given."):
     role=discord.utils.find(lambda g: g.name=="Owner", itr.guild.roles)
     if not role in itr.user.roles:
         await itr.response.send_message(content="Not authorized.",ephemeral=True)
