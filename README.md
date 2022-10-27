@@ -12,9 +12,9 @@ This bot features:
 
 > /warn <user> <reason Optional>
 
-> /mute <user>
+> /mute <user> *(PLANNED)*
 
-> /unmute <user>
+> /unmute <user> *(PLANNED)*
 
 ---
 
