@@ -16,6 +16,8 @@ This bot features:
 
 > /unmute <user> *(PLANNED)*
 
+> /clearwarn <user> <reason Optional>
+
 ---
 
 Reminder: This isn't the complete version of the bot, nor can you use the bot.
