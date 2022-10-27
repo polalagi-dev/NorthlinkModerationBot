@@ -114,6 +114,7 @@ async def kickCommandFunction(itr,user: discord.User, reason: str = "No reason g
     embed=embed.add_field(name="Reason",value=reason)
     await bot.get_guild(GUILD).kick(user=user,reason=reason)
     await itr.response.send_message(content=f"Sucessfully kicked <@{str(uid)}>.",embed=embed,ephemeral=False)
+    modLog(itr.user,user,3,reason,None)
 
 @tree.command(name="ban",description="Bans user",guild=discord.Object(id=GUILD))
 async def banCommandFunction(itr,user: discord.User, reason: str = "No reason given.", deletemessagedays: int = 0):
