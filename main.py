@@ -14,6 +14,7 @@ load_dotenv()
 
 TOKEN=os.getenv("TOKEN")
 GUILD=int(os.getenv("GUILD"))
+LOG=int(os.getenv("LOGCHANNEL"))
 
 # actionLog=open("action.log","r+w")
 # actionLogPrevious=actionLog.readlines()
@@ -43,6 +44,16 @@ def log(t,f):
         print(r)
         #actionLog.write("\n"+raw)
     #actionLog.close()
+
+def modLog(moderator,target,moderationType,reason,extra): # moderationType - 1 ban - 2 warn - 3 kick - 4 unban - 5 clearwarn
+    if moderationType==1:
+        embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
+        embed=embed.add_field(name="User",value=f"<@{target.id}>")
+        embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
+        embed=embed.add_field(name="Moderation Type",value="Ban")
+        embed=embed.add_field(name="Reason",value=reason)
+        embed=embed.add_field(name="Delete Message Days",value=str(extra))
+        await bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
 
 @bot.event
 async def on_ready():
@@ -107,19 +118,36 @@ async def unbanCommandFunction(itr,user: discord.User, reason: str = "No reason 
     await bot.get_guild(GUILD).unban(user=user,reason=reason)
     await itr.response.send_message(content=f"Sucessfully unbanned <@{str(uid)}>.",embed=embed,ephemeral=False)
 
-@tree.command(name="openticket",description="Opens a ticket",guild=discord.Object(id=GUILD))
-async def openticketCommandFunction(itr, reason: str = "No reason given."):
-    guild=bot.get_guild(GUILD)
-    if f"ticket-{itr.user}" in guild.channels:
-        await itr.response.send_message(content="You can only have one ticket opened at a time.",ephemeral=True)
-    guild.create_text_channel(name=f"ticket-{itr.user}",category=None) # TODO add valid category parameter
-    channelId=discord.utils.get(guild.channels, name=f"ticket-{itr.user}")
-    embed=discord.Embed(title="Ticket Created",description=f"Support is gonna respond soon.",color=0X1FACE3,timestamp=datetime.datetime.now())
-    embed=embed.add_field(name="Reason of Ticket Creation",value=reason) #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
-    #await bot.get_guild(GUILD).unban(user=user,reason=reason)
-    await itr.response.send_message(content=f"Ticket created, <#{str(channelId)}>.",ephemeral=True)
-    await guild.get_channel(channel_id=channelId).send_message(content=f"<@{str(itr.user.id)}>",embeds=embed)
-    #await itr.response.send_message(content=f"Sucessfully unbanned <@{str(uid)}>.",embed=embed,ephemeral=False)
+# @tree.command(name="openticket",description="Opens a ticket",guild=discord.Object(id=GUILD))
+# async def openticketCommandFunction(itr, reason: str = "No reason given."):
+#     guild=bot.get_guild(GUILD)
+#     if f"ticket-{itr.user}" in guild.channels:
+#         await itr.response.send_message(content="You can only have one ticket opened at a time.",ephemeral=True)
+#         return
+#     guild.create_text_channel(name=f"ticket-{itr.user}",category=None) # TODO add valid category parameter
+#     channelId=discord.utils.get(guild.channels, name=f"ticket-{itr.user}")
+#     embed=discord.Embed(title="Ticket Created",description=f"Support is gonna respond soon.",color=0X1FACE3,timestamp=datetime.datetime.now())
+#     embed=embed.add_field(name="Reason of Ticket Creation",value=reason) #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
+#     #await bot.get_guild(GUILD).unban(user=user,reason=reason)
+#     await itr.response.send_message(content=f"Ticket created, <#{str(channelId)}>.",ephemeral=True)
+#     await guild.get_channel(channel_id=channelId).send_message(content=f"<@{str(itr.user.id)}>",embeds=embed)
+#     #await itr.response.send_message(content=f"Sucessfully unbanned <@{str(uid)}>.",embed=embed,ephemeral=False)
+
+# @tree.command(name="closeticket",description="Closes a ticket",guild=discord.Object(id=GUILD))
+# async def closeticketCommandFunction(itr, reason: str = "No reason given."):
+#     guild=bot.get_guild(GUILD)
+#     if f"ticket-{itr.user}" in itr.channel:
+#         await itr.response.send_message(content="You can only have one ticket opened at a time.",ephemeral=True)
+#         return
+#     guild.create_text_channel(name=f"ticket-{itr.user}",category=None) # TODO add valid category parameter
+#     channelId=discord.utils.get(guild.channels, name=f"ticket-{itr.user}")
+#     embed=discord.Embed(title="Ticket Created",description=f"Support is gonna respond soon.",color=0X1FACE3,timestamp=datetime.datetime.now())
+#     embed=embed.add_field(name="Reason of Ticket Creation",value=reason) #User: <@{str(user.id    
+# )}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
+#     #await bot.get_guild(GUILD).unban(user=user,reason=reason)
+#     await itr.response.send_message(content=f"Ticket created, <#{str(channelId)}>.",ephemeral=True)
+#     await guild.get_channel(channel_id=channelId).send_message(content=f"<@{str(itr.user.id)}>",embeds=embed)
+#     #await itr.response.send_message(content=f"Sucessfully unbanned <@{str(uid)}>.",embed=embed,ephemeral=False)
 
 @bot.event
 async def on_member_join(user):
