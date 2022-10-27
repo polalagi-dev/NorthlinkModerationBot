@@ -60,7 +60,27 @@ def modLog(moderator,target,moderationType,reason,extra): # moderationType - 1 b
         embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
         embed=embed.add_field(name="Moderation Type",value="Warn")
         embed=embed.add_field(name="Reason",value=reason)
-        embed=embed.add_field(name="Delete Message Days",value=str(extra))
+        bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+    elif moderationType==3:
+        embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
+        embed=embed.add_field(name="User",value=f"<@{target.id}>")
+        embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
+        embed=embed.add_field(name="Moderation Type",value="Kick")
+        embed=embed.add_field(name="Reason",value=reason)
+        bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+    elif moderationType==4:
+        embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
+        embed=embed.add_field(name="User",value=f"<@{target.id}>")
+        embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
+        embed=embed.add_field(name="Moderation Type",value="Unban")
+        embed=embed.add_field(name="Reason",value=reason)
+        bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+    elif moderationType==5:
+        embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
+        embed=embed.add_field(name="User",value=f"<@{target.id}>")
+        embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
+        embed=embed.add_field(name="Moderation Type",value="Clear all warns")
+        embed=embed.add_field(name="Reason",value=reason)
         bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
 
 @bot.event
