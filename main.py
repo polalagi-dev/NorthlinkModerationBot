@@ -4,6 +4,7 @@ import termcolor
 import datetime
 import sys
 import time
+import requests
 from dotenv import load_dotenv
 
 intents=discord.Intents.default()
@@ -45,7 +46,7 @@ def log(t,f):
         #actionLog.write("\n"+raw)
     #actionLog.close()
 
-def modLog(moderator,target,moderationType,reason,extra): # moderationType - 1 ban - 2 warn - 3 kick - 4 unban - 5 clearwarn
+async def modLog(moderator,target,moderationType,reason,extra): # moderationType - 1 ban - 2 warn - 3 kick - 4 unban - 5 clearwarn - 6 mute - 7 unmute
     if moderationType==1:
         embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
         embed=embed.add_field(name="User",value=f"<@{target.id}>")
@@ -53,40 +54,71 @@ def modLog(moderator,target,moderationType,reason,extra): # moderationType - 1 b
         embed=embed.add_field(name="Moderation Type",value="Ban")
         embed=embed.add_field(name="Reason",value=reason)
         embed=embed.add_field(name="Delete Message Days",value=str(extra))
-        bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+        await bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
     elif moderationType==2:
         embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
         embed=embed.add_field(name="User",value=f"<@{target.id}>")
         embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
         embed=embed.add_field(name="Moderation Type",value="Warn")
         embed=embed.add_field(name="Reason",value=reason)
-        bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+        await bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
     elif moderationType==3:
         embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
         embed=embed.add_field(name="User",value=f"<@{target.id}>")
         embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
         embed=embed.add_field(name="Moderation Type",value="Kick")
         embed=embed.add_field(name="Reason",value=reason)
-        bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+        await bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
     elif moderationType==4:
         embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
         embed=embed.add_field(name="User",value=f"<@{target.id}>")
         embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
         embed=embed.add_field(name="Moderation Type",value="Unban")
         embed=embed.add_field(name="Reason",value=reason)
-        bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+        await bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
     elif moderationType==5:
         embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
         embed=embed.add_field(name="User",value=f"<@{target.id}>")
         embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
         embed=embed.add_field(name="Moderation Type",value="Clear all warns")
         embed=embed.add_field(name="Reason",value=reason)
-        bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+        await bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+    elif moderationType==6:
+        embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
+        embed=embed.add_field(name="User",value=f"<@{target.id}>")
+        embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
+        embed=embed.add_field(name="Moderation Type",value="Mute")
+        embed=embed.add_field(name="Reason",value=reason)
+        await bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+    elif moderationType==7:
+        embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
+        embed=embed.add_field(name="User",value=f"<@{target.id}>")
+        embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
+        embed=embed.add_field(name="Moderation Type",value="Unmute")
+        embed=embed.add_field(name="Reason",value=reason)
+        await bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+
+def checkTwitchStatus(account: str):
+    content=requests.get(f"https://twitch.tv/{account.lower()}")
+    if "isLiveBroadcast" in content:
+        return True
+    else:
+        return False
+
+async def streamingStatus():
+    while True:
+        result=checkTwitchStatus("AviaPlays")
+        if result:
+            await bot.change_presence(activity=discord.Streaming(name="AviaPlays", url="https://twitch.tv/AviaPlays"))
+        else:
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="commands."), status=discord.Status.idle)
 
 @bot.event
 async def on_ready():
     await tree.sync(guild=discord.Object(id=GUILD))
     log(f"{bot.user} Connected and synced slash commands.",1)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="commands."), status=discord.Status.idle)
+    # TODO - add streamingStatus implementation
 
 # @tree.command(name="slash",description="Testing slash commands.",guild=discord.Object(id=GUILD))
 # async def slashCommandFunction(itr):
@@ -114,7 +146,7 @@ async def kickCommandFunction(itr,user: discord.User, reason: str = "No reason g
     embed=embed.add_field(name="Reason",value=reason)
     await bot.get_guild(GUILD).kick(user=user,reason=reason)
     await itr.response.send_message(content=f"Sucessfully kicked <@{str(uid)}>.",embed=embed,ephemeral=False)
-    modLog(itr.user,user,3,reason,None)
+    await modLog(itr.user,user,3,reason,None)
 
 @tree.command(name="ban",description="Bans user",guild=discord.Object(id=GUILD))
 async def banCommandFunction(itr,user: discord.User, reason: str = "No reason given.", deletemessagedays: int = 0):
@@ -131,7 +163,7 @@ async def banCommandFunction(itr,user: discord.User, reason: str = "No reason gi
     embed=embed.add_field(name="Delete Message Days",value=str(deletemessagedays))
     await bot.get_guild(GUILD).ban(user=user,reason=reason,delete_message_days=deletemessagedays)
     await itr.response.send_message(content=f"Sucessfully banned <@{str(uid)}>.",embed=embed,ephemeral=False)
-    modLog(itr.user,user,1,reason,None)
+    await modLog(itr.user,user,1,reason,None)
 
 @tree.command(name="unban",description="Unbans user",guild=discord.Object(id=GUILD))
 async def unbanCommandFunction(itr,user: discord.User, reason: str = "No reason given."):
@@ -147,7 +179,56 @@ async def unbanCommandFunction(itr,user: discord.User, reason: str = "No reason 
     embed=embed.add_field(name="Reason",value=reason)
     await bot.get_guild(GUILD).unban(user=user,reason=reason)
     await itr.response.send_message(content=f"Sucessfully unbanned <@{str(uid)}>.",embed=embed,ephemeral=False)
-    modLog(itr.user,user,4,reason,None)
+    await modLog(itr.user,user,4,reason,None)
+
+@tree.command(name="mute",description="Mutes user",guild=discord.Object(id=GUILD))
+async def muteCommandFunction(itr,user: discord.User, reason: str = "No reason given."):
+    role=discord.utils.find(lambda g: g.name=="bro got muted", itr.guild.roles)
+    ownerrole=discord.utils.find(lambda g: g.name=="Owner", itr.guild.roles)
+    if not ownerrole in itr.user.roles:
+        await itr.response.send_message(content="Not authorized.",ephemeral=True)
+        return
+    if role in user.roles:
+        await itr.response.send_message(content="User is already muted.",ephemeral=True)
+        return
+    uid=user.id
+    embed=discord.Embed(title="Action Successful",description=f"Action was sucessfully logged and completed.",color=0X1FACE3,timestamp=datetime.datetime.now())
+    embed=embed.add_field(name="User",value=f"<@{user.id}>") #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
+    embed=embed.add_field(name="Moderator",value=f"<@{itr.user.id}>")
+    embed=embed.add_field(name="Moderation Type",value="Mute")
+    embed=embed.add_field(name="Reason",value=reason)
+    await user.add_roles(role)
+    await itr.response.send_message(content=f"Sucessfully muted <@{str(uid)}>.",embed=embed,ephemeral=False)
+    await modLog(itr.user,user,6,reason,None)
+
+@tree.command(name="about",description="About the bot",guild=discord.Object(id=GUILD))
+async def aboutCommandFunction(itr):
+    embed=discord.Embed(title="About",description=f"Here's some info about the bot.",color=0X1FACE3,timestamp=datetime.datetime.now())
+    embed=embed.add_field(name="Repository",value=f"[Link](https://github.com/polalagi-dev/NorthlinkModerationBot)") #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
+    embed=embed.add_field(name="Developer",value=f"<@690228101208211539>")
+    embed=embed.add_field(name="Language",value="Python")
+    embed=embed.add_field(name="License",value="Apache 2.0 License - [Link](https://github.com/polalagi-dev/NorthlinkModerationBot/blob/master/LICENSE)")
+    await itr.response.send_message(content="",embed=embed,ephemeral=False)
+
+@tree.command(name="unmute",description="Unmutes user",guild=discord.Object(id=GUILD))
+async def unmuteCommandFunction(itr,user: discord.User, reason: str = "No reason given."):
+    role=discord.utils.find(lambda g: g.name=="bro got muted", itr.guild.roles)
+    ownerrole=discord.utils.find(lambda g: g.name=="Owner", itr.guild.roles)
+    if not ownerrole in itr.user.roles:
+        await itr.response.send_message(content="Not authorized.",ephemeral=True)
+        return
+    if not role in user.roles:
+        await itr.response.send_message(content="User is not muted.",ephemeral=True)
+        return
+    uid=user.id
+    embed=discord.Embed(title="Action Successful",description=f"Action was sucessfully logged and completed.",color=0X1FACE3,timestamp=datetime.datetime.now())
+    embed=embed.add_field(name="User",value=f"<@{user.id}>") #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
+    embed=embed.add_field(name="Moderator",value=f"<@{itr.user.id}>")
+    embed=embed.add_field(name="Moderation Type",value="Unmute")
+    embed=embed.add_field(name="Reason",value=reason)
+    await user.remove_roles(role)
+    await itr.response.send_message(content=f"Sucessfully unmuted <@{str(uid)}>.",embed=embed,ephemeral=False)
+    await modLog(itr.user,user,7,reason,None)
 
 # @tree.command(name="openticket",description="Opens a ticket",guild=discord.Object(id=GUILD))
 # async def openticketCommandFunction(itr, reason: str = "No reason given."):
