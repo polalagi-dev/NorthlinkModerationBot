@@ -10,13 +10,13 @@ This bot features:
 
 > /kick <user> <reason Optional>
 
-> /warn <user> <reason Optional>
+> /warn <user> <reason Optional> *(WAITING FOR IMPLEMENTATION)*
 
-> /mute <user> *(PLANNED)*
+> /mute <user>
 
-> /unmute <user> *(PLANNED)*
+> /unmute <user>
 
-> /clearwarn <user> <reason Optional>
+> /clearwarn <user> <reason Optional> *(WAITING FOR IMPLEMENTATION)*
 
 ---
 
