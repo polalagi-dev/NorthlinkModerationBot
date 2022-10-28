@@ -126,9 +126,9 @@ async def streamingStatus():
 async def on_ready():
     await tree.sync(guild=discord.Object(id=GUILD))
     log(f"{bot.user} Connected and synced slash commands.",1)
-    #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
     # TODO - add streamingStatus implementation
-    status=await threading.Thread(target=streamingStatus)
+    #status=await threading.Thread(target=streamingStatus)
 
 # @tree.command(name="slash",description="Testing slash commands.",guild=discord.Object(id=GUILD))
 # async def slashCommandFunction(itr):
