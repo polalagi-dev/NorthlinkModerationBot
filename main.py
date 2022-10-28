@@ -131,6 +131,7 @@ async def banCommandFunction(itr,user: discord.User, reason: str = "No reason gi
     embed=embed.add_field(name="Delete Message Days",value=str(deletemessagedays))
     await bot.get_guild(GUILD).ban(user=user,reason=reason,delete_message_days=deletemessagedays)
     await itr.response.send_message(content=f"Sucessfully banned <@{str(uid)}>.",embed=embed,ephemeral=False)
+    modLog(itr.user,user,1,reason,None)
 
 @tree.command(name="unban",description="Unbans user",guild=discord.Object(id=GUILD))
 async def unbanCommandFunction(itr,user: discord.User, reason: str = "No reason given."):
@@ -146,6 +147,7 @@ async def unbanCommandFunction(itr,user: discord.User, reason: str = "No reason 
     embed=embed.add_field(name="Reason",value=reason)
     await bot.get_guild(GUILD).unban(user=user,reason=reason)
     await itr.response.send_message(content=f"Sucessfully unbanned <@{str(uid)}>.",embed=embed,ephemeral=False)
+    modLog(itr.user,user,4,reason,None)
 
 # @tree.command(name="openticket",description="Opens a ticket",guild=discord.Object(id=GUILD))
 # async def openticketCommandFunction(itr, reason: str = "No reason given."):
