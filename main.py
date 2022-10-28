@@ -117,7 +117,7 @@ async def streamingStatus():
 async def on_ready():
     await tree.sync(guild=discord.Object(id=GUILD))
     log(f"{bot.user} Connected and synced slash commands.",1)
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="commands."), status=discord.Status.idle)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
     # TODO - add streamingStatus implementation
 
 # @tree.command(name="slash",description="Testing slash commands.",guild=discord.Object(id=GUILD))
@@ -134,7 +134,7 @@ async def on_ready():
 
 @tree.command(name="kick",description="Kicks user",guild=discord.Object(id=GUILD))
 async def kickCommandFunction(itr,user: discord.User, reason: str = "No reason given."):
-    role=discord.utils.find(lambda g: g.name=="Owner", itr.guild.roles)
+    role=discord.utils.find(lambda g: g.name=="Bot Usage Permissions", itr.guild.roles)
     if not role in itr.user.roles:
         await itr.response.send_message(content="Not authorized.",ephemeral=True)
         return
@@ -150,7 +150,7 @@ async def kickCommandFunction(itr,user: discord.User, reason: str = "No reason g
 
 @tree.command(name="ban",description="Bans user",guild=discord.Object(id=GUILD))
 async def banCommandFunction(itr,user: discord.User, reason: str = "No reason given.", deletemessagedays: int = 0):
-    role=discord.utils.find(lambda g: g.name=="Owner", itr.guild.roles)
+    role=discord.utils.find(lambda g: g.name=="Bot Usage Permissions", itr.guild.roles)
     if not role in itr.user.roles:
         await itr.response.send_message(content="Not authorized.",ephemeral=True)
         return
@@ -167,7 +167,7 @@ async def banCommandFunction(itr,user: discord.User, reason: str = "No reason gi
 
 @tree.command(name="unban",description="Unbans user",guild=discord.Object(id=GUILD))
 async def unbanCommandFunction(itr,user: discord.User, reason: str = "No reason given."):
-    role=discord.utils.find(lambda g: g.name=="Owner", itr.guild.roles)
+    role=discord.utils.find(lambda g: g.name=="Bot Usage Permissions", itr.guild.roles)
     if not role in itr.user.roles:
         await itr.response.send_message(content="Not authorized.",ephemeral=True)
         return
@@ -183,8 +183,8 @@ async def unbanCommandFunction(itr,user: discord.User, reason: str = "No reason 
 
 @tree.command(name="mute",description="Mutes user",guild=discord.Object(id=GUILD))
 async def muteCommandFunction(itr,user: discord.User, reason: str = "No reason given."):
-    role=discord.utils.find(lambda g: g.name=="bro got muted", itr.guild.roles)
-    ownerrole=discord.utils.find(lambda g: g.name=="Owner", itr.guild.roles)
+    role=discord.utils.find(lambda g: g.name=="Muted", itr.guild.roles)
+    ownerrole=discord.utils.find(lambda g: g.name=="Bot Usage Permissions", itr.guild.roles)
     if not ownerrole in itr.user.roles:
         await itr.response.send_message(content="Not authorized.",ephemeral=True)
         return
@@ -212,8 +212,8 @@ async def aboutCommandFunction(itr):
 
 @tree.command(name="unmute",description="Unmutes user",guild=discord.Object(id=GUILD))
 async def unmuteCommandFunction(itr,user: discord.User, reason: str = "No reason given."):
-    role=discord.utils.find(lambda g: g.name=="bro got muted", itr.guild.roles)
-    ownerrole=discord.utils.find(lambda g: g.name=="Owner", itr.guild.roles)
+    role=discord.utils.find(lambda g: g.name=="Muted", itr.guild.roles)
+    ownerrole=discord.utils.find(lambda g: g.name=="Bot Usage Permissions", itr.guild.roles)
     if not ownerrole in itr.user.roles:
         await itr.response.send_message(content="Not authorized.",ephemeral=True)
         return
