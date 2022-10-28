@@ -19,6 +19,6 @@ while True:
     initial=current
     #main.close()
     print("Updated main.py")
-    time.sleep(500)
+    time.sleep(1000)
     os.system("pm2 start main.py --name job1 --interpreter python3 --restart-delay 10000")
     time.sleep(300000)
