@@ -5,6 +5,8 @@ import datetime
 import sys
 import time
 import requests
+import random
+import threading
 from dotenv import load_dotenv
 
 intents=discord.Intents.default()
@@ -100,7 +102,7 @@ async def modLog(moderator,target,moderationType,reason,extra): # moderationType
 
 def checkTwitchStatus(account: str):
     content=requests.get(f"https://twitch.tv/{account.lower()}")
-    if "isLiveBroadcast" in content:
+    if "isLiveBroadcast" in content.text:
         return True
     else:
         return False
@@ -108,17 +110,25 @@ def checkTwitchStatus(account: str):
 async def streamingStatus():
     while True:
         result=checkTwitchStatus("AviaPlays")
-        if result:
+        if result==True:
             await bot.change_presence(activity=discord.Streaming(name="AviaPlays", url="https://twitch.tv/AviaPlays"))
         else:
-            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="commands."), status=discord.Status.idle)
+            num=random.randint(1,3)
+            if num==1:
+                await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="commands"), status=discord.Status.idle)
+            elif num==2:
+                await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
+            elif num==3:
+                await bot.change_presence(activity=discord.Game(name="Northlink Ferries"), status=discord.Status.idle)
+        time.sleep(60000)
 
 @bot.event
 async def on_ready():
     await tree.sync(guild=discord.Object(id=GUILD))
     log(f"{bot.user} Connected and synced slash commands.",1)
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
+    #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
     # TODO - add streamingStatus implementation
+    status=await threading.Thread(target=streamingStatus)
 
 # @tree.command(name="slash",description="Testing slash commands.",guild=discord.Object(id=GUILD))
 # async def slashCommandFunction(itr):
