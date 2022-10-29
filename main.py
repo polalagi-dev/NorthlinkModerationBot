@@ -294,7 +294,7 @@ async def serverinfoCommandFunction(itr):
         userCount+=1
     totalUserCount=userCount+botCount
     embed=discord.Embed(title="Server Info",description=f"Here is some information about the server.",color=0X1FACE3,timestamp=datetime.datetime.now())
-    embed=embed.add_field(name="Owner",value=f"<@{str(bot.get_guild(GUILD).owner.id)}>") #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
+    embed=embed.add_field(name="Owner",value=f"<@{str(bot.get_guild(GUILD).owner_id)}>") #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
     embed=embed.add_field(name="Roles",value=f"{str(bot.get_guild(GUILD).roles.count())}")
     embed=embed.add_field(name="Human Users",value=str(userCount))
     embed=embed.add_field(name="Bot Count",value=str(botCount))
