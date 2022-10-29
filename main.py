@@ -21,6 +21,7 @@ TOKEN=os.getenv("TOKEN")
 GUILD=int(os.getenv("GUILD"))
 LOG=int(os.getenv("LOGCHANNEL"))
 MEMBER=int(os.getenv("MEMBER"))
+WELCOME=int(os.getenv("WELCOME"))
 
 # actionLog=open("action.log","r+w")
 # actionLogPrevious=actionLog.readlines()
@@ -161,6 +162,14 @@ async def on_ready():
     #await threadedMemberCount()
     await bot.get_guild(GUILD).get_channel(MEMBER).edit(name="Member Count: "+str(bot.get_guild(GUILD).member_count))
 
+
+# @bot.event
+# async def on_message(ctx):
+#     if ctx.author==bot.user:
+#         return
+#     if ctx.channel==bot.get_guild(GUILD).get_channel(WELCOME):
+#         await bot.get_guild(GUILD).get_channel(MEMBER).edit(name="Member Count: "+str(bot.get_guild(GUILD).member_count))
+#         await ctx.channel.send(f"Welcome {}")
 
 
 @atexit.register
@@ -340,7 +349,11 @@ async def serverinfoCommandFunction(itr):
 async def on_member_join(user):
     embed=discord.Embed(title="Welcome to Northlink Ferries!",description=f"Welcome! We hope you enjoy your stay at Northlink Ferries! Also, don't forget to read the rules so you can enjoy the crossings!\n- Ownership Team",color=0X1FACE3,timestamp=datetime.datetime.now())
     embed=embed.set_image("https://cdn.discordapp.com/avatars/1016379795631779890/1092b308fa22df9b456284c05d83be5c.webp")
+    embed2=discord.Embed(title="Welcome to Northlink Ferries!",description=f"Welcome <@{user.id}>! We hope you enjoy your stay at Northlink Ferries! Also, don't forget to read the rules so you can enjoy the crossings!\n- Ownership Team",color=0X1FACE3,timestamp=datetime.datetime.now())
+    embed2=embed.set_image("https://cdn.discordapp.com/avatars/1016379795631779890/1092b308fa22df9b456284c05d83be5c.webp")
+    await bot.get_guild(GUILD).get_channel(MEMBER).edit(name="Member Count: "+str(bot.get_guild(GUILD).member_count))
     await user.send(content="Northlink Ferries",embeds=embed)
+    await bot.get_guild(GUILD).get_channel(WELCOME).send(content="Welcome!",embed=embed2)
 
 script=open("main.py","r")
 initial=script.readlines()
