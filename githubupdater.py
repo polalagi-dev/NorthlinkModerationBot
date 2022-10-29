@@ -21,4 +21,5 @@ while True:
     print("Updated main.py")
     time.sleep(1000)
     os.system("pm2 start main.py --name job1 --interpreter python3 --restart-delay 10000")
+    print("PM2 restarted")
     time.sleep(300000)
