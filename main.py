@@ -145,9 +145,6 @@ async def threadedMemberCount():
         await memberchannel.edit(name=f"Member Count: {int(memberCount)}")
         time.sleep(60)
 
-streamingStatus()
-threadedMemberCount()
-
 @bot.event
 async def on_ready():
     await tree.sync(guild=discord.Object(id=GUILD))
@@ -160,6 +157,8 @@ async def on_ready():
     #await membercount.start()
     #asyncio.create_task(coro=streamingStatus)
     #asyncio.create_task(coro=threadedMemberCount)
+    await streamingStatus()
+    await threadedMemberCount()
 
 @atexit.register
 def onExit():
