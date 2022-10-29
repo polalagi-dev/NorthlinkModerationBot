@@ -7,6 +7,7 @@ import time
 import requests
 import random
 import threading
+import atexit
 from dotenv import load_dotenv
 
 intents=discord.Intents.default()
@@ -18,6 +19,7 @@ load_dotenv()
 TOKEN=os.getenv("TOKEN")
 GUILD=int(os.getenv("GUILD"))
 LOG=int(os.getenv("LOGCHANNEL"))
+MEMBER=int(os.getenv("MEMBER"))
 
 # actionLog=open("action.log","r+w")
 # actionLogPrevious=actionLog.readlines()
@@ -107,11 +109,15 @@ def checkTwitchStatus(account: str):
     else:
         return False
 
+streamingFlag=True
+
 async def streamingStatus():
     while True:
         result=checkTwitchStatus("AviaPlays")
+        if not streamingFlag:
+            break
         if result==True:
-            await bot.change_presence(activity=discord.Streaming(name="AviaPlays", url="https://twitch.tv/AviaPlays"))
+            await bot.change_presence(activity=discord.Streaming(name="AviaPlays", url="https://twitch.tv/AviaPlays", platform="Twitch"))
         else:
             num=random.randint(1,3)
             if num==1:
@@ -120,15 +126,39 @@ async def streamingStatus():
                 await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
             elif num==3:
                 await bot.change_presence(activity=discord.Game(name="Northlink Ferries"), status=discord.Status.idle)
-        time.sleep(60000)
+        time.sleep(60)
+
+async def threadedMemberCount():
+    memberchannel=bot.get_guild(GUILD).get_channel(MEMBER)
+    memberchannel.connect(self_deaf=True, self_mute=True)
+    while True:
+        memberchannel=bot.get_guild(GUILD).get_channel(MEMBER)
+        members=bot.get_guild(GUILD).members
+        if not streamingFlag:
+            break
+        memberCount=0
+        for member in members:
+            if member.bot:
+                continue
+            memberCount+=1
+        memberchannel.edit(name=f"Member Count: {int(memberCount)}")
+        time.sleep(60)
 
 @bot.event
 async def on_ready():
     await tree.sync(guild=discord.Object(id=GUILD))
     log(f"{bot.user} Connected and synced slash commands.",1)
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
+    #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
     # TODO - add streamingStatus implementation
-    #status=await threading.Thread(target=streamingStatus)
+    status=threading.Thread(target=streamingStatus)
+    membercount=threading.Thread(target=threadedMemberCount)
+    status.start()
+    membercount.start()
+
+@atexit.register
+def onExit():
+    global streamingFlag
+    streamingFlag=False
 
 # @tree.command(name="slash",description="Testing slash commands.",guild=discord.Object(id=GUILD))
 # async def slashCommandFunction(itr):
@@ -239,6 +269,16 @@ async def unmuteCommandFunction(itr,user: discord.User, reason: str = "No reason
     await user.remove_roles(role)
     await itr.response.send_message(content=f"Sucessfully unmuted <@{str(uid)}>.",embed=embed,ephemeral=False)
     await modLog(itr.user,user,7,reason,None)
+
+@tree.command(name="serverinfo",description="Views server info",guild=discord.Object(id=GUILD))
+async def serverinfoCommandFunction(itr,user: discord.User, reason: str = "No reason given."):
+    uid=user.id
+    embed=discord.Embed(title="Server Info",description=f"Here is some information about the server.",color=0X1FACE3,timestamp=datetime.datetime.now())
+    embed=embed.add_field(name="Owner",value=f"<@{user.id}>") #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
+    embed=embed.add_field(name="Moderator",value=f"<@{itr.user.id}>")
+    embed=embed.add_field(name="Moderation Type",value="Warn")
+    embed=embed.add_field(name="Reason",value=reason)
+    await itr.response.send_message(content="",embed=embed,ephemeral=False)
 
 # @tree.command(name="openticket",description="Opens a ticket",guild=discord.Object(id=GUILD))
 # async def openticketCommandFunction(itr, reason: str = "No reason given."):
