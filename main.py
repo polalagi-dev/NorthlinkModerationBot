@@ -155,8 +155,8 @@ async def on_ready():
     #membercount=await threading.Thread(target=threadedMemberCount)
     #await status.start()
     #await membercount.start()
-    asyncio.run(main=streamingStatus)
-    asyncio.run(main=threadedMemberCount)
+    asyncio.create_task(coro=streamingStatus)
+    asyncio.create_task(coro=threadedMemberCount)
 
 @atexit.register
 def onExit():
