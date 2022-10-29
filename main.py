@@ -145,11 +145,11 @@ async def threadedMemberCount():
         await memberchannel.edit(name=f"Member Count: {int(memberCount)}")
         time.sleep(60)
 
-@bot.event
+@bot.event(coro=threadedMemberCount)
 async def on_ready():
     await tree.sync(guild=discord.Object(id=GUILD))
     log(f"{bot.user} Connected and synced slash commands.",1)
-    #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
     # TODO - add streamingStatus implementation
     #status=await threading.Thread(target=streamingStatus)
     #membercount=await threading.Thread(target=threadedMemberCount)
@@ -157,8 +157,10 @@ async def on_ready():
     #await membercount.start()
     #asyncio.create_task(coro=streamingStatus)
     #asyncio.create_task(coro=threadedMemberCount)
-    await streamingStatus()
-    await threadedMemberCount()
+    #await streamingStatus()
+    #await threadedMemberCount()
+
+
 
 @atexit.register
 def onExit():
