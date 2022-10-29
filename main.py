@@ -160,10 +160,12 @@ async def on_ready():
     #await streamingStatus()
     #await threadedMemberCount()
     userCount=0
+    botCount=0
     for member in bot.get_guild(GUILD).members:
-        if member.bot:
-            continue
-        userCount+=1
+        if member.bot==True:
+            botCount+=1
+        else:
+            userCount+=1
     await bot.get_guild(GUILD).get_channel(MEMBER).edit(name="Human Users Count: "+str(userCount))
 
 
@@ -291,16 +293,16 @@ async def serverinfoCommandFunction(itr):
     realRoleCount=0
     botRoleCount=0
     for member in bot.get_guild(GUILD).members:
-        if member.bot:
+        if member.bot==True:
             botCount+=1
-            continue
-        userCount+=1
+        else:
+            userCount+=1
     totalUserCount=userCount+botCount
     for role in bot.get_guild(GUILD).roles:
-        if role.is_bot_managed:
+        if role.is_bot_managed==True:
             botRoleCount+=1
-            continue
-        roleCount+=1
+        else:
+            roleCount+=1
     realRoleCount=roleCount+botRoleCount
     embed=discord.Embed(title="Server Info",description=f"Here is some information about the server.",color=0X1FACE3,timestamp=datetime.datetime.now())
     embed=embed.add_field(name="Owner",value=f"<@{str(bot.get_guild(GUILD).owner_id)}>") #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
