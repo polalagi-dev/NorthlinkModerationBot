@@ -150,8 +150,8 @@ async def on_ready():
     log(f"{bot.user} Connected and synced slash commands.",1)
     #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
     # TODO - add streamingStatus implementation
-    status=threading.Thread(target=streamingStatus)
-    membercount=threading.Thread(target=threadedMemberCount)
+    status=await threading.Thread(target=streamingStatus)
+    membercount=await threading.Thread(target=threadedMemberCount)
     await status.start()
     await membercount.start()
 
