@@ -150,7 +150,8 @@ async def threadedMemberCount():
 async def on_ready():
     await tree.sync(guild=discord.Object(id=GUILD))
     log(f"{bot.user} Connected and synced slash commands.",1)
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
+    #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.competing, name="other games"), status=discord.Status.idle)
     # TODO - add streamingStatus implementation
     #status=await threading.Thread(target=streamingStatus)
     #membercount=await threading.Thread(target=threadedMemberCount)
