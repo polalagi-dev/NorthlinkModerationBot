@@ -8,6 +8,7 @@ import requests
 import random
 import threading
 import atexit
+import asyncio
 from dotenv import load_dotenv
 
 intents=discord.Intents.default()
@@ -150,10 +151,12 @@ async def on_ready():
     log(f"{bot.user} Connected and synced slash commands.",1)
     #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="the server"), status=discord.Status.idle)
     # TODO - add streamingStatus implementation
-    status=await threading.Thread(target=streamingStatus)
-    membercount=await threading.Thread(target=threadedMemberCount)
-    await status.start()
-    await membercount.start()
+    #status=await threading.Thread(target=streamingStatus)
+    #membercount=await threading.Thread(target=threadedMemberCount)
+    #await status.start()
+    #await membercount.start()
+    asyncio.run(main=streamingStatus)
+    asyncio.run(main=threadedMemberCount)
 
 @atexit.register
 def onExit():
