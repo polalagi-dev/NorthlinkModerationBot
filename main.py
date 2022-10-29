@@ -141,7 +141,7 @@ async def threadedMemberCount():
             if member.bot:
                 continue
             memberCount+=1
-        memberchannel.edit(name=f"Member Count: {int(memberCount)}")
+        await memberchannel.edit(name=f"Member Count: {int(memberCount)}")
         time.sleep(60)
 
 @bot.event
@@ -152,8 +152,8 @@ async def on_ready():
     # TODO - add streamingStatus implementation
     status=threading.Thread(target=streamingStatus)
     membercount=threading.Thread(target=threadedMemberCount)
-    status.start()
-    membercount.start()
+    await status.start()
+    await membercount.start()
 
 @atexit.register
 def onExit():
