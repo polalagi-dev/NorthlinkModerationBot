@@ -287,15 +287,25 @@ async def unmuteCommandFunction(itr,user: discord.User, reason: str = "No reason
 async def serverinfoCommandFunction(itr):
     userCount=0
     botCount=0
+    roleCount=0
+    realRoleCount=0
+    botRoleCount=0
     for member in bot.get_guild(GUILD).members:
         if member.bot:
             botCount+=1
             continue
         userCount+=1
     totalUserCount=userCount+botCount
+    for role in bot.get_guild(GUILD).roles:
+        if role.is_bot_managed:
+            botRoleCount+=1
+            continue
+        roleCount+=1
+    realRoleCount=roleCount+botRoleCount
     embed=discord.Embed(title="Server Info",description=f"Here is some information about the server.",color=0X1FACE3,timestamp=datetime.datetime.now())
     embed=embed.add_field(name="Owner",value=f"<@{str(bot.get_guild(GUILD).owner_id)}>") #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
-    embed=embed.add_field(name="Roles",value=f"{str(bot.get_guild(GUILD).roles.count())}")
+    embed=embed.add_field(name="Roles",value=f"{str(roleCount)}")
+    embed=embed.add_field(name="All Roles",value=f"{str(realRoleCount)}")
     embed=embed.add_field(name="Human Users",value=str(userCount))
     embed=embed.add_field(name="Bot Count",value=str(botCount))
     embed=embed.add_field(name="Members Count",value=str(totalUserCount))
