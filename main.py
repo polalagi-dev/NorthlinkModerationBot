@@ -159,14 +159,7 @@ async def on_ready():
     #asyncio.create_task(coro=threadedMemberCount)
     #await streamingStatus()
     #await threadedMemberCount()
-    userCount=0
-    botCount=0
-    for member in bot.get_guild(GUILD).members:
-        if member.bot==True:
-            botCount+=1
-        else:
-            userCount+=1
-    await bot.get_guild(GUILD).get_channel(MEMBER).edit(name="Human Users Count: "+str(userCount))
+    await bot.get_guild(GUILD).get_channel(MEMBER).edit(name="Member Count: "+str(bot.get_guild(GUILD).member_count))
 
 
 
@@ -306,12 +299,10 @@ async def serverinfoCommandFunction(itr):
     realRoleCount=roleCount+botRoleCount
     embed=discord.Embed(title="Server Info",description=f"Here is some information about the server.",color=0X1FACE3,timestamp=datetime.datetime.now())
     embed=embed.add_field(name="Owner",value=f"<@{str(bot.get_guild(GUILD).owner_id)}>") #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
-    embed=embed.add_field(name="Roles",value=f"{str(roleCount)}")
-    embed=embed.add_field(name="All Roles",value=f"{str(realRoleCount)}")
-    embed=embed.add_field(name="Human Users",value=str(userCount))
-    embed=embed.add_field(name="Bot Count",value=str(botCount))
-    embed=embed.add_field(name="Members Count",value=str(totalUserCount))
-    await bot.get_guild(GUILD).get_channel(MEMBER).edit(name="Human Users Count: "+str(userCount))
+    embed=embed.add_field(name="Roles",value=f"*Unavailable*")
+    embed=embed.add_field(name="All Roles",value=f"*Unavailable*")
+    embed=embed.add_field(name="Member Count",value=str(bot.get_guild(GUILD).member_count))
+    await bot.get_guild(GUILD).get_channel(MEMBER).edit(name="Member Count: "+str(bot.get_guild(GUILD).member_count))
     await itr.response.send_message(content="",embed=embed,ephemeral=False)
 
 # @tree.command(name="openticket",description="Opens a ticket",guild=discord.Object(id=GUILD))
