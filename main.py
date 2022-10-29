@@ -145,8 +145,8 @@ async def threadedMemberCount():
         await memberchannel.edit(name=f"Member Count: {int(memberCount)}")
         time.sleep(60)
 
-asyncio.run(main=streamingStatus)
-asyncio.run(main=threadedMemberCount)
+await streamingStatus()
+await threadedMemberCount()
 
 @bot.event
 async def on_ready():
