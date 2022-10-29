@@ -145,8 +145,8 @@ async def threadedMemberCount():
         await memberchannel.edit(name=f"Member Count: {int(memberCount)}")
         time.sleep(60)
 
-await streamingStatus()
-await threadedMemberCount()
+streamingStatus()
+threadedMemberCount()
 
 @bot.event
 async def on_ready():
