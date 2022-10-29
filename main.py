@@ -145,7 +145,7 @@ async def threadedMemberCount():
         await memberchannel.edit(name=f"Member Count: {int(memberCount)}")
         time.sleep(60)
 
-@bot.event(threadedMemberCount)
+@bot.event
 async def on_ready():
     await tree.sync(guild=discord.Object(id=GUILD))
     log(f"{bot.user} Connected and synced slash commands.",1)
