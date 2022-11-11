@@ -271,6 +271,7 @@ async def aboutCommandFunction(itr):
     embed=discord.Embed(title="About",description=f"Here's some info about the bot.",color=0X1FACE3,timestamp=datetime.datetime.now())
     embed=embed.add_field(name="Repository",value=f"[Link](https://github.com/polalagi-dev/NorthlinkModerationBot)") #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
     embed=embed.add_field(name="Developer",value=f"<@690228101208211539>")
+    embed=embed.add_field(name="Contributors",value=f"<@690609211679440908>")
     embed=embed.add_field(name="Language",value="Python")
     embed=embed.add_field(name="License",value="Apache 2.0 License - [Link](https://github.com/polalagi-dev/NorthlinkModerationBot/blob/master/LICENSE)")
     await itr.response.send_message(content="",embed=embed,ephemeral=False)
