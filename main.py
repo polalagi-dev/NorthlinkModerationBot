@@ -334,7 +334,7 @@ async def softbanCommandFunction(itr,user: discord.User, reason: str = "No reaso
     embed=embed.add_field(name="Moderator",value=f"<@{itr.user.id}>")
     embed=embed.add_field(name="Moderation Type",value="Kick")
     embed=embed.add_field(name="Reason",value=reason)
-    await bot.get_guild(GUILD).ban(user=user,reason=reason,delete_message_days=7500)
+    await bot.get_guild(GUILD).ban(user=user,reason=reason,delete_message_days=7)
     time.sleep(1)
     await bot.get_guild(GUILD).unban(user=user,reason=reason)
     await itr.response.send_message(content=f"Sucessfully softbanned! <@{str(uid)}>.",embed=embed,ephemeral=False)
