@@ -103,6 +103,13 @@ async def modLog(moderator,target,moderationType,reason,extra): # moderationType
         embed=embed.add_field(name="Moderation Type",value="Unmute")
         embed=embed.add_field(name="Reason",value=reason)
         await bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
+    elif moderationType==8:
+        embed=discord.Embed(title="Moderator Action Log",description=f"Check details below for more information.",color=0X1FACE3,timestamp=datetime.datetime.now())
+        embed=embed.add_field(name="User",value=f"<@{target.id}>")
+        embed=embed.add_field(name="Moderator",value=f"<@{moderator.id}>")
+        embed=embed.add_field(name="Moderation Type",value="Softban")
+        embed=embed.add_field(name="Reason",value=reason)
+        await bot.get_channel(LOG).send(content="Moderation Action logged.",embed=embed)
 
 def checkTwitchStatus(account: str):
     content=requests.get(f"https://twitch.tv/{account.lower()}")
@@ -314,6 +321,24 @@ async def serverinfoCommandFunction(itr):
     embed=embed.add_field(name="Member Count",value=str(bot.get_guild(GUILD).member_count))
     await bot.get_guild(GUILD).get_channel(MEMBER).edit(name="Member Count: "+str(bot.get_guild(GUILD).member_count))
     await itr.response.send_message(content="",embed=embed,ephemeral=False)
+   
+@tree.command(name="softban",description="Softbans user",guild=discord.Object(id=GUILD)) # Contribution by polak_3#5704
+async def softbanCommandFunction(itr,user: discord.User, reason: str = "No reason given."):
+    role=discord.utils.find(lambda g: g.name=="Bot Usage Permissions", itr.guild.roles)
+    if not role in itr.user.roles:
+        await itr.response.send_message(content="Not authorized.",ephemeral=True)
+        return
+    uid=user.id
+    embed=discord.Embed(title="Action Successful",description=f"Action was sucessfully logged and completed.",color=0X1FACE3,timestamp=datetime.datetime.now())
+    embed=embed.add_field(name="User",value=f"<@{user.id}>") #User: <@{str(user.id)}>\nModerator: <@{str(itr.user.id)}>\nType: Kick
+    embed=embed.add_field(name="Moderator",value=f"<@{itr.user.id}>")
+    embed=embed.add_field(name="Moderation Type",value="Kick")
+    embed=embed.add_field(name="Reason",value=reason)
+    await bot.get_guild(GUILD).ban(user=user,reason=reason)
+    time.sleep(1)
+    await bot.get_guild(GUILD).unban(user=user,reason=reason)
+    await itr.response.send_message(content=f"Sucessfully softbanned! <@{str(uid)}>.",embed=embed,ephemeral=False)
+    await modLog(itr.user,user,8,reason,None)
 
 # @tree.command(name="openticket",description="Opens a ticket",guild=discord.Object(id=GUILD))
 # async def openticketCommandFunction(itr, reason: str = "No reason given."):
